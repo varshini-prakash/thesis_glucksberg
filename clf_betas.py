@@ -28,7 +28,7 @@ from sklearn.utils import shuffle
 from ast import literal_eval
 import glob
 
-def cross_validaton_nested_svm(X, y):
+def cross_validaton_logreg(X, y):
 
     best_alphas, results, precision, recall, cm, y_tests, y_preds = [], [], [], [], [], [], []
         
@@ -36,8 +36,8 @@ def cross_validaton_nested_svm(X, y):
         
         X_train, X_test, y_train, y_test = train_test_split(X,y,test_size =0.1,stratify = y,random_state=i)
         model = LogisticRegression(class_weight='balanced', random_state=i,solver = 'lbfgs', penalty = 'l2',max_iter=2000, n_jobs=-1)
-        scoring = 'balanced_accuracy'
-        ridge_params = {'C': [0.000001,0.00001,0.0001,0.0001,0.001,0.01, 0.1, 1, 10, 100,1000,10000]}
+        scoring = 'accuracy'
+        ridge_params = {'C': [0.0001,0.001,0.01, 0.1, 1, 10, 100,1000]}
         clf = GridSearchCV(model, ridge_params, scoring=scoring, n_jobs=-1, cv=4)
 
         scaler = StandardScaler()
@@ -104,7 +104,7 @@ def load_betas(participant, beta_dir):
 # LT LF M SM
 y_labels = [0]*80 + [1]*40 + [2]*20 + [3]*20
 beta_dir = '/home/varshini/scratch/data/data_glucksberg/processed_data/betas/alphabetical/'
-out_dir = '/home/varshini/scratch/src/thesis_glucksberg/output/clf_betas_19_apr/'
+out_dir = '/home/varshini/scratch/src/thesis_glucksberg/output/clf_betas_18_apr/'
 
 control_p = ['P054','P057','P064','P065','P067','P068','P072','P073','P075','P076','P080','P081']
 ASD_p     = ['P050','P055','P056','P058','P059','P060','P066','P069','P070','P071','P078','P079']
@@ -113,7 +113,7 @@ all_participants = sorted(ASD_p + control_p)
 
 for participant in all_participants:
     all_betas = load_betas(participant, beta_dir)
-    y_tests,y_preds, cm = cross_validaton_nested_svm(all_betas, y_labels)
+    y_tests,y_preds, cm = cross_validaton_logreg(all_betas, y_labels)
     
     with open(out_dir + participant + '_pred.pkl','wb') as f:
         pk.dump(y_preds, f)
