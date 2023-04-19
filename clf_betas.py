@@ -101,6 +101,7 @@ def load_betas(participant, beta_dir):
     all_betas = np.concatenate((lt_betas, lf_betas, m_betas, sm_betas), axis=0)
     return all_betas
     
+# LT LF M SM
 y_labels = [0]*80 + [1]*40 + [2]*20 + [3]*20
 beta_dir = '/home/varshini/scratch/data/data_glucksberg/processed_data/betas/alphabetical/'
 out_dir = '/home/varshini/scratch/src/thesis_glucksberg/output/clf_betas_19_apr/'
